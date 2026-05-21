@@ -75,11 +75,11 @@ const supabase = createClient();
     return;
   }
 
-  alert(
-    `Booking Confirmed! PNR: ${data.pnr_code}`
-  );
+  router.push(
+  `/booking/success?pnr=${data.pnr_code}`
+);
 
-  clearBooking();
+//   clearBooking();
 
   router.push("/booking/success");
 }
