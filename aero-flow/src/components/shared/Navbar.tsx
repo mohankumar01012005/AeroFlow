@@ -1,0 +1,59 @@
+"use client";
+
+import Link from "next/link";
+
+import { useRouter } from "next/navigation";
+
+import { createClient } from "@/src/lib/supabase/client";
+
+import { useUserStore } from "@/src/stores/useUserStore";
+
+export default function Navbar() {
+  const router = useRouter();
+
+  const supabase = createClient();
+
+  const {
+    isAuthenticated,
+    email,
+    clearUser,
+  } = useUserStore();
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+
+    clearUser();
+
+    router.replace("/login");
+
+    router.refresh();
+  }
+
+  return (
+    <header className="border-b border-neutral-200 bg-white">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <Link
+          href="/"
+          className="text-lg font-bold tracking-tight"
+        >
+          AeroFlow
+        </Link>
+
+        {isAuthenticated && (
+          <div className="flex items-center gap-4">
+            <p className="hidden text-sm text-neutral-500 md:block">
+              {email}
+            </p>
+
+            <button
+              onClick={handleLogout}
+              className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
