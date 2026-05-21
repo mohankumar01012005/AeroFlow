@@ -3,33 +3,17 @@
 
 import { useState } from 'react';
 import { ArrowLeft, ArrowUp } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { useFlightStore } from "@/src/stores/useFlightStore";
+import { useEffect } from "react";
 
-type SeatStatus = 'available' | 'booked' | 'selected';
-
-interface Seat {
-  id: string;
-  row: string;
-  col: number;
-  status: SeatStatus;
-}
-
-const ROWS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
-const BOOKED = new Set(['A3', 'B5', 'C3', 'C4', 'D6', 'E3', 'E4', 'E5', 'G4', 'G5', 'G6', 'H2', 'I5', 'J3', 'K1', 'L6', 'M2', 'M4', 'N3', 'O2', 'P4', 'P5']);
-const INITIALLY_SELECTED = new Set(['A1', 'C6', 'D2']);
-
-function generateSeats(): Seat[] {
-  const seats: Seat[] = [];
-  ROWS.forEach((row) => {
-    for (let col = 1; col <= 6; col++) {
-      const id = `${row}${col}`;
-      let status: SeatStatus = 'available';
-      if (BOOKED.has(id)) status = 'booked';
-      if (INITIALLY_SELECTED.has(id)) status = 'selected';
-      seats.push({ id, row, col, status });
-    }
-  });
-  return seats;
-}
+import { createClient } from "@/src/lib/supabase/client";
+import {
+  generateSeats,
+  Seat,
+  SeatStatus,
+  
+} from "@/src/utils/mockSeats";
 
 function getSeatClass(status: SeatStatus): string {
   switch (status) {
@@ -43,19 +27,161 @@ function getSeatClass(status: SeatStatus): string {
 }
 
 export default function App() {
-  const [seats, setSeats] = useState<Seat[]>(generateSeats);
+  const router = useRouter();
+  const supabase = createClient();
+  const [seats, setSeats] =
+  useState<Seat[]>([]);
 
-  const selected = seats.filter((s) => s.status === 'selected');
+  const {
+  selectedSeat,
+  setSelectedSeat,
+  selectedFlight,
+  setBookingStep,
+} = useFlightStore();
 
-  function handleSeat(id: string) {
-    setSeats((prev) =>
-      prev.map((s) => {
-        if (s.id !== id || s.status === 'booked') return s;
-        return { ...s, status: s.status === 'selected' ? 'available' : 'selected' };
-      })
-    );
+useEffect(() => {
+ async function loadSeats() {
+  if (!selectedFlight) return;
+
+  const { data, error } =
+    await supabase
+      .from("seats")
+      .select("*")
+      .eq(
+        "flight_id",
+        selectedFlight.id
+      );
+
+  if (error) {
+    console.error(error);
+    return;
   }
 
+  const transformedSeats: Seat[] =
+    data.map((seat) => {
+      const rowNumber = Number(
+        seat.seat_number.slice(0, -1)
+      );
+
+      const seatLetter =
+        seat.seat_number.slice(-1);
+
+      const seatMap: Record<
+        string,
+        number
+      > = {
+        A: 1,
+        B: 2,
+        C: 3,
+        D: 4,
+        E: 5,
+        F: 6,
+      };
+
+      return {
+        id: seat.seat_number,
+
+        row: rowNumber.toString(),
+
+        col: seatMap[seatLetter],
+
+        status:
+          seat.is_available
+            ? "available"
+            : "booked",
+      };
+    });
+
+  setSeats(transformedSeats);
+ }
+
+ loadSeats();
+}, [selectedFlight?.id]);
+
+
+useEffect(() => {
+  if (!selectedFlight) return;
+
+  const channel = supabase
+    .channel("seat-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "seats",
+      },
+      (payload) => {
+        const updatedSeat = payload.new;
+
+        setSeats((prevSeats) =>
+          prevSeats.map((seat) =>
+            seat.id === updatedSeat.seat_number
+             ? {
+    ...seat,
+    status: updatedSeat.is_available
+      ? "available"
+      : "booked",
+  }
+              : seat
+          )
+        );
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [selectedFlight, supabase]);
+
+
+
+
+  const selected = seats.find(
+  (s) => s.status === "selected"
+);
+
+function handleSeat(id: string) {
+  setSelectedSeat(id);
+
+  setSeats((prev) =>
+    prev.map((seat) => {
+      if (seat.status === "booked") {
+        return seat;
+      }
+
+      if (seat.id === id) {
+        return {
+          ...seat,
+          status:
+            seat.status === "selected"
+              ? "available"
+              : "selected",
+        };
+      }
+
+      return {
+        ...seat,
+        status:
+          seat.status === "selected"
+            ? "available"
+            : seat.status,
+      };
+    })
+  );
+}
+function handleContinueBooking() {
+  if (!selectedSeat) return;
+
+  setBookingStep(
+    "passenger-details"
+  );
+
+  router.push(
+    "/booking/passenger-details"
+  );
+}
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-200 via-blue-100 to-purple-100 p-6 font-sans">
       <div className="max-w-5xl mx-auto">
@@ -165,7 +291,7 @@ export default function App() {
                 <div className="text-right">
                   <p className="text-[10px] text-gray-400 mb-0.5">Seats</p>
                   <p className="font-bold text-gray-900 text-sm">
-                    {selected.length > 0 ? selected.map((s) => s.id).join(', ') : '—'}
+                    {selected ? selected.id : "—"}
                   </p>
                 </div>
               </div>
@@ -234,21 +360,38 @@ export default function App() {
             {/* Scrollable cabin area */}
             <div className="flex-1 overflow-y-auto px-8 py-6">
               <div className="flex flex-col gap-3">
-                {ROWS.map((row) => (
+                {Array.from(
+  { length: 30 },
+  (_, i) => (i + 1).toString()
+).map((row) => (
                   <div key={row} className="flex justify-center items-center gap-2.5">
                     {/* Left side seats (1-3) */}
                     <div className="flex gap-2">
                       {[1, 2, 3].map((col) => {
-                        const seat = seats.find((s) => s.id === `${row}${col}`)!;
+                        const seat = seats.find(
+  (s) =>
+    s.row === row &&
+    s.col === col
+);
                         return (
                           <button
-                            key={seat.id}
-                            onClick={() => handleSeat(seat.id)}
-                            disabled={seat.status === 'booked'}
-                            className={`w-9 h-9 rounded-lg text-[10px] font-bold border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${getSeatClass(seat.status)}`}
-                            title={`${seat.id} - ${seat.status}`}
+                            key={seat?.id}
+                            onClick={() =>
+  seat &&
+  handleSeat(seat.id)
+}
+                            disabled={
+  !seat ||
+  seat.status === "booked"
+}
+                            className={`w-9 h-9 rounded-lg text-[10px] font-bold border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
+  seat
+    ? getSeatClass(seat.status)
+    : ""
+}`}
+                            title={`${seat?.id} - ${seat?.status}`}
                           >
-                            {seat.col}
+                            {seat?.id}
                           </button>
                         );
                       })}
@@ -264,20 +407,35 @@ export default function App() {
 
                     {/* Right side seats (4-6) */}
                     <div className="flex gap-2">
-                      {[4, 5, 6].map((col) => {
-                        const seat = seats.find((s) => s.id === `${row}${col}`)!;
-                        return (
-                          <button
-                            key={seat.id}
-                            onClick={() => handleSeat(seat.id)}
-                            disabled={seat.status === 'booked'}
-                            className={`w-9 h-9 rounded-lg text-[10px] font-bold border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${getSeatClass(seat.status)}`}
-                            title={`${seat.id} - ${seat.status}`}
-                          >
-                            {seat.col}
-                          </button>
-                        );
-                      })}
+                    {[4, 5, 6].map((col) => {
+  const seat = seats.find(
+    (s) =>
+      s.row === row &&
+      s.col === col
+  );
+
+  return (
+    <button
+      key={seat?.id}
+      onClick={() =>
+        seat &&
+        handleSeat(seat.id)
+      }
+      disabled={
+        !seat ||
+        seat.status === "booked"
+      }
+      className={`w-9 h-9 rounded-lg text-[10px] font-bold border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
+        seat
+          ? getSeatClass(seat.status)
+          : ""
+      }`}
+      title={`${seat?.id} - ${seat?.status}`}
+    >
+      {seat?.id}
+    </button>
+  );
+})}
                     </div>
                   </div>
                 ))}
@@ -294,9 +452,21 @@ export default function App() {
 
             {/* Continue button */}
             <div className="px-8 py-6 bg-white border-t border-gray-100">
-              <button className="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors text-sm tracking-wide shadow-md hover:shadow-lg">
-                Continue Booking
-              </button>
+             <button
+  onClick={handleContinueBooking}
+  disabled={!selectedSeat}
+  className={`
+    w-full py-3.5 rounded-xl text-sm tracking-wide shadow-md transition-all font-bold
+
+    ${
+      selectedSeat
+        ? "bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white hover:shadow-lg"
+        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+    }
+  `}
+>
+  Continue Booking
+</button>
             </div>
           </div>
         </div>
