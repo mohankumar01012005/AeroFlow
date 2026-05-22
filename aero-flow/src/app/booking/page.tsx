@@ -9,18 +9,26 @@ import { createPortal } from "react-dom";
 
 type Booking = {
   id: string;
+
   pnr_code: string;
+
   status: string;
+
   total_price: number;
+
   flights: {
     flight_no: string;
+
     origin: string;
+
     destination: string;
+
     departs_at: string;
-  };
+  }[];
+
   seats: {
     seat_number: string;
-  };
+  }[];
 };
 
 export default function BookingsPage() {
@@ -154,19 +162,19 @@ export default function BookingsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-neutral-500">Flight</p>
-                        <p className="font-semibold">{booking.flights?.flight_no}</p>
+                        <p className="font-semibold">{booking.flights?.[0]?.flight_no}</p>
                       </div>
                       <div>
                         <p className="text-sm text-neutral-500">Route</p>
                         <p className="font-semibold">
-                          {booking.flights?.origin} → {booking.flights?.destination}
+                          {booking.flights?.[0]?.origin} → {booking.flights?.[0]?.destination}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       <div>
                         <p className="text-sm text-neutral-500">Seat</p>
-                        <p className="font-semibold">{booking.seats?.seat_number}</p>
+                        <p className="font-semibold">{booking.seats?.[0]?.seat_number}</p>
                       </div>
                       <div>
                         <p className="text-sm text-neutral-500">Status</p>
