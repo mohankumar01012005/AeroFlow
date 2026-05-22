@@ -11,6 +11,7 @@ export type PassengerForm = {
 };
 
 export type BookingStep =
+  | "search"
   | "flight-selection"
   | "seat-selection"
   | "passenger-details"
