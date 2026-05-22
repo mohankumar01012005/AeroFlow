@@ -1,7 +1,5 @@
 import { createClient } from "@/src/lib/supabase/server";
 
-import { Flight } from "@/src/types/flight";
-import FlightCard from "@/src/components/flight/FlightCard";
 import FlightsList from "../../components/flight/FlightsList";
 type FlightsPageProps = {
   searchParams: Promise<{

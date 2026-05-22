@@ -14,7 +14,7 @@ const supabase = createClient();
   selectedFlight,
   selectedSeat,
   passengerForm,
-  clearBooking,
+  
 } = useFlightStore();
 
   const totalPrice =
