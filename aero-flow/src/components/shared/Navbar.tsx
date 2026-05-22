@@ -15,7 +15,7 @@ export default function Navbar() {
 
   const {
     isAuthenticated,
-    email,
+    
     clearUser,
   } = useUserStore();
 

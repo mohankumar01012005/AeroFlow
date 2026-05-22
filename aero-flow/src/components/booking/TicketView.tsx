@@ -3,6 +3,7 @@
 import jsPDF from "jspdf";
 
 type TicketViewProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   booking: any;
 };
 

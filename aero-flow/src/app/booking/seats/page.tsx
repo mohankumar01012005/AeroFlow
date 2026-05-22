@@ -1,15 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, ArrowUp } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { useFlightStore } from "@/src/stores/useFlightStore";
 import { useEffect } from "react";
 import { formatDate } from "@/src/utils/formatDate";
 import { createClient } from "@/src/lib/supabase/client";
 import {
-  generateSeats,
+  
   Seat,
   SeatStatus,
   
@@ -142,9 +143,6 @@ useEffect(() => {
 
 
 
-  const selected = seats.find(
-  (s) => s.status === "selected"
-);
 
 function handleSeat(id: string) {
   setSelectedSeat(id);
@@ -283,7 +281,7 @@ function handleContinueBooking() {
     <div className="flex justify-between items-end text-xs">
       <div>
         <p className="font-semibold text-gray-900">
-          {selectedFlight?.airline || "AeroFlow Airways"}
+          AeroFlow Airways
         </p>
 
         <p className="text-gray-400">
