@@ -18,17 +18,14 @@ type Booking = {
 
   flights: {
     flight_no: string;
-
     origin: string;
-
     destination: string;
-
     departs_at: string;
-  }[];
+  };
 
   seats: {
     seat_number: string;
-  }[];
+  };
 };
 
 export default function BookingsPage() {
@@ -78,8 +75,15 @@ export default function BookingsPage() {
         pnr_code,
         status,
         total_price,
-        flights ( flight_no, origin, destination, departs_at ),
-        seats ( seat_number )
+      flights (
+      flight_no,
+      origin,
+      destination,
+      departs_at
+),
+seats (
+  seat_number
+)
       `
       )
       .eq("user_id", user.id)
@@ -91,7 +95,18 @@ export default function BookingsPage() {
       return;
     }
 
-    setBookings(data || []);
+    const formattedBookings =
+  (data || []).map((booking) => ({
+    ...booking,
+    flights: Array.isArray(booking.flights)
+      ? booking.flights[0]
+      : booking.flights,
+    seats: Array.isArray(booking.seats)
+      ? booking.seats[0]
+      : booking.seats,
+  }));
+
+setBookings(formattedBookings);
     setLoading(false);
   }
 
@@ -162,19 +177,19 @@ export default function BookingsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-neutral-500">Flight</p>
-                        <p className="font-semibold">{booking.flights?.[0]?.flight_no}</p>
+                        <p className="font-semibold">{booking.flights?.flight_no}</p>
                       </div>
                       <div>
                         <p className="text-sm text-neutral-500">Route</p>
                         <p className="font-semibold">
-                          {booking.flights?.[0]?.origin} → {booking.flights?.[0]?.destination}
+                          {booking.flights?.origin} → {booking.flights?.destination}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       <div>
                         <p className="text-sm text-neutral-500">Seat</p>
-                        <p className="font-semibold">{booking.seats?.[0]?.seat_number}</p>
+                        <p className="font-semibold">{booking.seats?.seat_number}</p>
                       </div>
                       <div>
                         <p className="text-sm text-neutral-500">Status</p>
