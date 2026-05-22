@@ -31,19 +31,51 @@ export default function FlightCard({
 
     router.push("/booking/seats");
   }
+
+ const statusStyles = {
+  scheduled:
+    "bg-blue-500 text-white",
+
+  boarding:
+    "bg-yellow-500 text-black",
+
+  delayed:
+    "bg-red-500 text-white",
+
+  departed:
+    "bg-gray-500 text-white",
+
+  cancelled:
+    "bg-black text-white",
+};
   return (
+<div>
+  
+   
     <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:shadow-md">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-4">
-          <div>
-            <p className="text-sm text-neutral-500">
-              Flight Number
-            </p>
+          <div className="flex items-start justify-between gap-4">
+  <div>
+    <p className="text-sm text-neutral-500">
+      Flight Number
+    </p>
 
-            <h2 className="text-xl font-bold">
-              {flight.flight_no}
-            </h2>
-          </div>
+    <h2 className="text-xl font-bold">
+      {flight.flight_no}
+    </h2>
+  </div>
+
+  <div
+    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${
+      statusStyles[
+        flight.status as keyof typeof statusStyles
+      ]
+    }`}
+  >
+    {flight.status}
+  </div>
+</div>
 
           <div className="flex items-center gap-4">
             <div>
@@ -139,5 +171,6 @@ export default function FlightCard({
         </div>
       </div>
     </div>
+</div>
   );
 }

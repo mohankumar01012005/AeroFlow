@@ -42,6 +42,9 @@ export default function Navbar() {
         {isAuthenticated && (
           <div className="flex items-center gap-4">
            <div className="flex items-center gap-4">
+            <Link href="/">
+  Home
+</Link>
   <Link
     href="/booking"
     className="text-sm font-medium hover:underline"
@@ -49,7 +52,7 @@ export default function Navbar() {
     My Bookings
   </Link>
 
-  <button
+  <button onClick={() => { void handleLogout(); }}
     className="bg-black text-white px-4 py-2 rounded-xl"
   >
     Logout

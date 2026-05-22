@@ -9,7 +9,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useFlightStore } from "@/src/stores/useFlightStore";
-
 const passengerSchema = z.object({
   fullName: z
     .string()
@@ -63,9 +62,14 @@ export default function PassengerDetailsPage() {
 
     router.push("/booking/review");
   }
-
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-10">
+      <button
+  onClick={() => router.back()}
+  className="mb-6 flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+>
+  ← Back
+</button>
       <div className="mx-auto max-w-3xl">
         <h1 className="text-4xl font-bold">
           Passenger Details
