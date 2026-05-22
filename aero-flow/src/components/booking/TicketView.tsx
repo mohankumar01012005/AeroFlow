@@ -66,15 +66,15 @@ export default function TicketView({
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10">
-      <div className="mx-auto max-w-4xl rounded-3xl border border-gray-200 bg-white p-8">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-gray-200 bg-white p-5 sm:p-8">
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-green-100">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 sm:h-24 sm:w-24">
             <span className="text-5xl">
               ✈️
             </span>
           </div>
 
-          <h1 className="mt-6 text-4xl font-bold">
+          <h1 className="mt-6 text-3xl font-bold sm:text-4xl">
             Flight Ticket
           </h1>
 
@@ -88,12 +88,12 @@ export default function TicketView({
             PNR Number
           </p>
 
-          <h2 className="mt-2 text-4xl font-bold tracking-widest">
+          <h2 className="mt-2 break-all text-3xl font-bold tracking-widest sm:text-4xl">
             {booking.pnr_code}
           </h2>
         </div>
 
-        <div className="mt-8 rounded-3xl border border-dashed border-gray-300 bg-gray-50 p-8">
+        <div className="mt-8 rounded-3xl border border-dashed border-gray-300 bg-gray-50 p-5 sm:p-8">
           <div className="grid gap-8 md:grid-cols-2">
             <div className="space-y-6">
               <div>

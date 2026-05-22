@@ -105,7 +105,7 @@ setLoading(false);
   ← Back
 </button>
       <div className="mx-auto max-w-4xl">
-        <h1 className="text-4xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           Review Booking
         </h1>
 
@@ -114,7 +114,7 @@ setLoading(false);
         </p>
 
         {/* Flight Details */}
-        <div className="mt-8 rounded-3xl border bg-white p-6 shadow-sm">
+        <div className="mt-8 rounded-3xl border bg-white p-5 shadow-sm sm:p-6">
           <h2 className="text-xl font-semibold">
             Flight Information
           </h2>
@@ -164,7 +164,7 @@ setLoading(false);
         </div>
 
         {/* Passenger Details */}
-        <div className="mt-6 rounded-3xl border bg-white p-6 shadow-sm">
+        <div className="mt-6 rounded-3xl border bg-white p-5 shadow-sm sm:p-6">
           <h2 className="text-xl font-semibold">
             Passenger Information
           </h2>
@@ -218,7 +218,7 @@ setLoading(false);
         <button
   onClick={handleConfirmBooking}
   disabled={loading}
-  className="w-full rounded-xl bg-black px-5 py-4 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+  className="mt-6 w-full rounded-xl bg-black px-5 py-4 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
 >
   {loading
     ? "Confirming Booking..."

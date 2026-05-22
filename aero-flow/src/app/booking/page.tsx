@@ -145,7 +145,7 @@ setBookings(formattedBookings);
 
   if (loading) {
     return (
-      <main className="p-10">
+      <main className="px-4 py-10 sm:px-6">
         <p>Loading bookings...</p>
       </main>
     );
@@ -154,7 +154,7 @@ setBookings(formattedBookings);
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-10">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-4xl font-bold">My Bookings</h1>
+        <h1 className="text-3xl font-bold sm:text-4xl">My Bookings</h1>
         <p className="mt-2 text-neutral-500">View all your flight bookings</p>
 
         <div className="mt-10 space-y-5">
@@ -186,7 +186,7 @@ setBookings(formattedBookings);
                         </p>
                       </div>
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-3 md:text-right">
                       <div>
                         <p className="text-sm text-neutral-500">Seat</p>
                         <p className="font-semibold">{booking.seats?.seat_number}</p>
@@ -216,7 +216,7 @@ setBookings(formattedBookings);
                       e.stopPropagation();
                       setBookingToCancel(booking.id);
                     }}
-                    className="mt-6 rounded-xl bg-red-500 px-4 py-2 text-white cursor-pointer transition-colors hover:bg-red-600"
+                    className="mt-6 w-full cursor-pointer rounded-xl bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600 sm:w-auto"
                   >
                     Cancel Booking
                   </button>
@@ -253,7 +253,7 @@ setBookings(formattedBookings);
               style={{ pointerEvents: "auto" }}
             >
               <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
+                <div className="mb-4 flex items-start gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-100">
                     <span className="text-2xl">⚠️</span>
                   </div>
@@ -267,10 +267,10 @@ setBookings(formattedBookings);
                   <p className="text-gray-700">Are you sure you want to cancel this booking?</p>
                 </div>
 
-                <div className="flex items-center justify-end gap-3">
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                   <button
                     onClick={() => setBookingToCancel(null)}
-                    className=" cursor-pointer rounded-lg border border-gray-300 bg-white px-5 py-4 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    className="cursor-pointer rounded-lg border border-gray-300 bg-white px-5 py-4 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
                   >
                     Keep Booking
                   </button>
@@ -280,7 +280,7 @@ setBookings(formattedBookings);
                       handleCancelBooking(bookingToCancel);
                       setBookingToCancel(null);
                     }}
-                    className=" cursor-pointer rounded-lg px-5 py-4 text-sm font-medium text-white transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    className="cursor-pointer rounded-lg px-5 py-4 text-sm font-medium text-white transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     style={{
                       backgroundColor: "#dc2626", // red-600
                       color: "white",

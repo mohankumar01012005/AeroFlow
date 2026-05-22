@@ -58,9 +58,7 @@ export default function FlightsList({
 
   return (
     <>
-      <div className=" ml-240 mb-6 flex items-center justify-between">
-       
-
+      <div className="mb-6 flex justify-end">
         <select
           value={sortBy}
           onChange={(e) =>
@@ -68,7 +66,7 @@ export default function FlightsList({
               e.target.value
             )
           }
-          className="rounded-xl border border-gray-300 bg-white px-4 py-2"
+          className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 sm:w-auto"
         >
           <option value="price-low">
             Lowest Price

@@ -8,7 +8,12 @@ import { useFlightStore } from "@/src/stores/useFlightStore";
 
 export default function FlightSearchForm() {
   const router = useRouter();
-
+const cities = [
+  "Delhi",
+  "Mumbai",
+  "Bangalore",
+  "Chennai",
+];
   const {
     addRecentSearch,
 
@@ -85,18 +90,34 @@ export default function FlightSearchForm() {
               Origin
             </label>
 
-            <input
-              type="text"
-              placeholder="Delhi"
-              value={origin}
-              onChange={(e) =>
-                setOrigin(
-                  e.target.value
-                )
-              }
-              required
-              className="w-full rounded-xl border border-neutral-300 px-4 py-3 outline-none transition focus:border-black"
-            />
+           <select
+  value={origin}
+  onChange={(e) => {
+    setOrigin(e.target.value);
+
+    if (
+      e.target.value ===
+      destination
+    ) {
+      setDestination("");
+    }
+  }}
+  required
+  className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 outline-none transition focus:border-black"
+>
+  <option value="">
+    Select Origin
+  </option>
+
+  {cities.map((city) => (
+    <option
+      key={city}
+      value={city}
+    >
+      {city}
+    </option>
+  ))}
+</select>
           </div>
 
           <div className="space-y-2">
@@ -104,18 +125,35 @@ export default function FlightSearchForm() {
               Destination
             </label>
 
-            <input
-              type="text"
-              placeholder="Mumbai"
-              value={destination}
-              onChange={(e) =>
-                setDestination(
-                  e.target.value
-                )
-              }
-              required
-              className="w-full rounded-xl border border-neutral-300 px-4 py-3 outline-none transition focus:border-black"
-            />
+           <select
+  value={destination}
+  onChange={(e) =>
+    setDestination(
+      e.target.value
+    )
+  }
+  required
+  disabled={!origin}
+  className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 outline-none transition focus:border-black disabled:bg-neutral-100"
+>
+  <option value="">
+    Select Destination
+  </option>
+
+  {cities
+    .filter(
+      (city) =>
+        city !== origin
+    )
+    .map((city) => (
+      <option
+        key={city}
+        value={city}
+      >
+        {city}
+      </option>
+    ))}
+</select>
           </div>
 
           <div className="space-y-2">

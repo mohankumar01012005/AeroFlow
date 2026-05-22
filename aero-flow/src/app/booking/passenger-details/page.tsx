@@ -71,7 +71,7 @@ export default function PassengerDetailsPage() {
   ← Back
 </button>
       <div className="mx-auto max-w-3xl">
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-3xl font-bold sm:text-4xl">
           Passenger Details
         </h1>
 
@@ -81,7 +81,7 @@ export default function PassengerDetailsPage() {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mt-10 space-y-6 rounded-3xl border border-neutral-200 bg-white p-8 shadow-sm"
+          className="mt-10 space-y-6 rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-8"
         >
           {/* FULL NAME */}
           <div>

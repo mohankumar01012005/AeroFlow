@@ -185,7 +185,7 @@ function handleContinueBooking() {
   );
 }
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-200 via-blue-100 to-purple-100 p-6 font-sans">
+    <div className="min-h-screen bg-linear-to-br from-blue-200 via-blue-100 to-purple-100 p-4 font-sans sm:p-6">
       <div className="max-w-5xl mx-auto">
         {/* Back button */}
         <div className="mb-5">
@@ -198,11 +198,11 @@ function handleContinueBooking() {
 </button>
         </div>
 
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-5">Choose Seats</h1>
+        <h1 className="mb-5 text-3xl font-extrabold text-gray-900">Choose Seats</h1>
 
-        <div className="flex gap-5 items-start">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
           {/* Left panel */}
-          <div className="w-72 shrink-0 flex flex-col gap-4">
+          <div className="flex w-full flex-col gap-4 xl:w-72 xl:shrink-0">
             {/* Your Flight */}
            <div className="bg-white rounded-3xl shadow-xl p-5">
   <div>
@@ -278,7 +278,7 @@ function handleContinueBooking() {
       </button>
     </div>
 
-    <div className="flex justify-between items-end text-xs">
+    <div className="flex flex-wrap justify-between gap-3 text-xs sm:items-end">
       <div>
         <p className="font-semibold text-gray-900">
           AeroFlow Airways
@@ -377,7 +377,7 @@ function handleContinueBooking() {
 </div>
 </div>
           {/* Right panel – Seat map */}
-          <div className="flex-1 bg-linear-to-b from-gray-50 to-white rounded-3xl shadow-lg flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-hidden rounded-3xl bg-linear-to-b from-gray-50 to-white shadow-lg">
             {/* Airplane nose */}
             <div className="relative w-full pt-8 pb-4 bg-linear-to-b from-gray-100 to-gray-50 flex justify-center">
               <div
@@ -387,11 +387,11 @@ function handleContinueBooking() {
             </div>
 
             {/* Title and legend */}
-            <div className="px-8 py-4 border-b border-gray-100">
+            <div className="border-b border-gray-100 px-4 py-4 sm:px-8">
               <h2 className="text-center font-extrabold text-gray-900 text-lg mb-4">Economy Class</h2>
 
               {/* Legend */}
-              <div className="flex justify-center gap-6 mb-2">
+              <div className="mb-2 flex flex-wrap justify-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-lg bg-white border-2 border-amber-400 shadow-sm" />
                   <span className="text-xs font-medium text-gray-600">Available</span>
@@ -408,15 +408,15 @@ function handleContinueBooking() {
             </div>
 
             {/* Scrollable cabin area */}
-            <div className="flex-1 overflow-y-auto px-8 py-6">
-              <div className="flex flex-col gap-3">
+            <div className="overflow-x-auto overflow-y-auto px-3 py-6 sm:px-8">
+              <div className="mx-auto flex min-w-fit flex-col gap-3">
                 {Array.from(
   { length: 30 },
   (_, i) => (i + 1).toString()
 ).map((row) => (
-                  <div key={row} className="flex justify-center items-center gap-2.5">
+                  <div key={row} className="flex items-center justify-center gap-1.5 sm:gap-2.5">
                     {/* Left side seats (1-3) */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 sm:gap-2">
                       {[1, 2, 3].map((col) => {
                         const seat = seats.find(
   (s) =>
@@ -434,7 +434,7 @@ function handleContinueBooking() {
   !seat ||
   seat.status === "booked"
 }
-                            className={`w-9 h-9 rounded-lg text-[10px] font-bold border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg border-2 text-[9px] font-bold transition-all duration-200 hover:scale-105 active:scale-95 sm:h-9 sm:w-9 sm:text-[10px] ${
   seat
     ? getSeatClass(seat.status)
     : ""
@@ -448,15 +448,15 @@ function handleContinueBooking() {
                     </div>
 
                     {/* Row label */}
-                    <div className="w-6 text-center">
+                    <div className="w-5 text-center sm:w-6">
                       <span className="text-xs font-bold text-gray-500">{row}</span>
                     </div>
 
                     {/* Aisle */}
-                    <div className="w-1 h-6 bg-gray-200 rounded-full mx-1" />
+                    <div className="mx-0.5 h-6 w-1 rounded-full bg-gray-200 sm:mx-1" />
 
                     {/* Right side seats (4-6) */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 sm:gap-2">
                     {[4, 5, 6].map((col) => {
   const seat = seats.find(
     (s) =>
@@ -475,7 +475,7 @@ function handleContinueBooking() {
         !seat ||
         seat.status === "booked"
       }
-      className={`w-9 h-9 rounded-lg text-[10px] font-bold border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 ${
+      className={`flex h-8 w-8 items-center justify-center rounded-lg border-2 text-[9px] font-bold transition-all duration-200 hover:scale-105 active:scale-95 sm:h-9 sm:w-9 sm:text-[10px] ${
         seat
           ? getSeatClass(seat.status)
           : ""
@@ -501,7 +501,7 @@ function handleContinueBooking() {
             </div>
 
             {/* Continue button */}
-            <div className="px-8 py-6 bg-white border-t border-gray-100">
+            <div className="border-t border-gray-100 bg-white px-4 py-6 sm:px-8">
              <button
   onClick={handleContinueBooking}
   disabled={!selectedSeat}

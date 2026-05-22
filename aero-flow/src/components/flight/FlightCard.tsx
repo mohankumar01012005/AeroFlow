@@ -55,7 +55,7 @@ export default function FlightCard({
     <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:shadow-md">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-4">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:gap-4">
   <div>
     <p className="text-sm text-neutral-500">
       Flight Number
@@ -77,7 +77,7 @@ export default function FlightCard({
   </div>
 </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <div>
               <p className="text-sm text-neutral-500">
                 Origin
@@ -164,7 +164,7 @@ export default function FlightCard({
 
          <button
   onClick={handleSelectFlight}
-  className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+  className="w-full rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90 sm:w-auto"
 >
   Select Flight
 </button>
