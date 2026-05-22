@@ -5,6 +5,7 @@ import { persist } from "zustand/middleware";
 import {
   FlightStore,
   PassengerForm,
+  RecentSearch,
 } from "@/src/types/booking";
 
 const initialPassengerForm: PassengerForm = {
@@ -29,32 +30,64 @@ export const useFlightStore =
 
         bookingStep: "search",
 
-        passengerForm: initialPassengerForm,
+        passengerForm:
+          initialPassengerForm,
+
+        recentSearches: [],
 
         setSearchQuery: (query) =>
           set({
             searchQuery: query,
           }),
 
-        setSelectedFlight: (flight) =>
+        setSelectedFlight: (
+          flight
+        ) =>
           set({
             selectedFlight: flight,
           }),
 
-        setSelectedSeat: (seat) =>
+        setSelectedSeat: (
+          seat
+        ) =>
           set({
             selectedSeat: seat,
           }),
 
-        setBookingStep: (step) =>
+        setBookingStep: (
+          step
+        ) =>
           set({
             bookingStep: step,
           }),
 
-        setPassengerForm: (form) =>
+        setPassengerForm: (
+          form
+        ) =>
           set({
             passengerForm: form,
           }),
+
+        addRecentSearch: (
+          search: RecentSearch
+        ) =>
+          set((state) => ({
+            recentSearches: [
+              search,
+
+              ...state.recentSearches.filter(
+                (item) =>
+                  !(
+                    item.origin ===
+                      search.origin &&
+                    item.destination ===
+                      search.destination &&
+                    item.date ===
+                      search.date
+                  )
+              ),
+            ].slice(0, 5),
+          })),
 
         clearBooking: () =>
           set({
@@ -64,27 +97,33 @@ export const useFlightStore =
 
             selectedSeat: null,
 
-            bookingStep: "search",
+            bookingStep:
+              "search",
 
             passengerForm:
               initialPassengerForm,
           }),
       }),
-     {
-  name: "flight-booking-store",
+      {
+        name:
+          "flight-booking-store",
 
-  partialize: (state) => ({
-    searchQuery: state.searchQuery,
+        partialize: (state) => ({
+          searchQuery:
+            state.searchQuery,
 
-    selectedFlight:
-      state.selectedFlight,
+          selectedFlight:
+            state.selectedFlight,
 
-    selectedSeat:
-      state.selectedSeat,
+          selectedSeat:
+            state.selectedSeat,
 
-    bookingStep:
-      state.bookingStep,
-  }),
-}
+          bookingStep:
+            state.bookingStep,
+
+          recentSearches:
+            state.recentSearches,
+        }),
+      }
     )
   );

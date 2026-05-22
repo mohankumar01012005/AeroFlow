@@ -1,10 +1,13 @@
 "use client";
-
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/client";
 import { useFlightStore } from "@/src/stores/useFlightStore";
+import { useState } from "react";
 
 export default function ReviewBookingPage() {
+    const [loading, setLoading] =
+  useState(false);
   const router = useRouter();
 const supabase = createClient();
  const {
@@ -18,10 +21,14 @@ const supabase = createClient();
     Number(selectedFlight?.base_price || 0);
 
  async function handleConfirmBooking() {
+    setLoading(true);
+
   if (
+    
     !selectedFlight ||
     !selectedSeat
   ) {
+    setLoading(false);
     return;
   }
 
@@ -30,8 +37,9 @@ const supabase = createClient();
   } = await supabase.auth.getUser();
 
   if (!user) {
-    alert("Please login again");
-
+    toast.error("Please login again");
+    
+    setLoading(false);
     return;
   }
 
@@ -63,30 +71,39 @@ const supabase = createClient();
 
   if (error) {
     console.error(error);
-
-    alert("Booking failed");
-
+    toast.error("Booking failed");
+    
+    setLoading(false);
     return;
   }
 
   if (!data.success) {
-    alert(data.message);
-
+    toast.error(data.message);
+    
+    setLoading(false);
     return;
   }
 
-  router.push(
-  `/booking/success?pnr=${data.pnr_code}`
-);
+  
 
 //   clearBooking();
+setLoading(false);
+  router.push(
+  `/booking/success?id=${data.booking_id}`
+);
 
-  router.push("/booking/success");
+
 }
 
 
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-10">
+      <button
+  onClick={() => router.back()}
+  className="mb-6 flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+>
+  ← Back
+</button>
       <div className="mx-auto max-w-4xl">
         <h1 className="text-4xl font-bold tracking-tight">
           Review Booking
@@ -199,11 +216,14 @@ const supabase = createClient();
 
         {/* Confirm Button */}
         <button
-          onClick={handleConfirmBooking}
-          className="mt-8 w-full rounded-2xl bg-black py-4 text-sm font-semibold text-white transition hover:opacity-90"
-        >
-          Confirm Booking
-        </button>
+  onClick={handleConfirmBooking}
+  disabled={loading}
+  className="w-full rounded-xl bg-black px-5 py-4 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  {loading
+    ? "Confirming Booking..."
+    : "Confirm Booking"}
+</button>
       </div>
     </main>
   );

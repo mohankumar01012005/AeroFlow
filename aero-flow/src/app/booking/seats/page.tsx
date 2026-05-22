@@ -6,12 +6,13 @@ import { ArrowLeft, ArrowUp } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { useFlightStore } from "@/src/stores/useFlightStore";
 import { useEffect } from "react";
-
+import { formatDate } from "@/src/utils/formatDate";
 import { createClient } from "@/src/lib/supabase/client";
 import {
   generateSeats,
   Seat,
   SeatStatus,
+  
   
 } from "@/src/utils/mockSeats";
 
@@ -32,11 +33,14 @@ export default function App() {
   const [seats, setSeats] =
   useState<Seat[]>([]);
 
+
+
   const {
   selectedSeat,
   setSelectedSeat,
   selectedFlight,
   setBookingStep,
+  searchQuery,
 } = useFlightStore();
 
 useEffect(() => {
@@ -187,10 +191,13 @@ function handleContinueBooking() {
       <div className="max-w-5xl mx-auto">
         {/* Back button */}
         <div className="mb-5">
-          <button className="flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-gray-800 transition-colors">
-            <ArrowLeft size={14} />
-            Back to Choose Tiers
-          </button>
+        <button
+  onClick={() => router.back()}
+  className="flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
+>
+  <ArrowLeft size={14} />
+  Back
+</button>
         </div>
 
         <h1 className="text-3xl font-extrabold text-gray-900 mb-5">Choose Seats</h1>
@@ -199,133 +206,178 @@ function handleContinueBooking() {
           {/* Left panel */}
           <div className="w-72 shrink-0 flex flex-col gap-4">
             {/* Your Flight */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold text-gray-900 text-base">Your Flight</h2>
-                <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50">
-                  <ArrowUp size={14} />
-                </button>
-              </div>
+           <div className="bg-white rounded-3xl shadow-xl p-5">
+  <div>
+    <p className="text-sm text-neutral-500">
+      Flight Number
+    </p>
 
-              <div className="grid grid-cols-2 mb-3">
-                <div>
-                  <p className="text-[10px] text-gray-400 mb-0.5">Departure</p>
-                  <p className="font-bold text-gray-900 text-sm">Jakarta (CGK)</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-gray-400 mb-0.5">Arrival</p>
-                  <p className="font-bold text-gray-900 text-sm">Tokyo (HND)</p>
-                </div>
-              </div>
+    <p className="text-lg font-bold">
+      {selectedFlight?.flight_no}
+    </p>
+  </div>
 
-              <div className="grid grid-cols-2 mb-4">
-                <div>
-                  <p className="text-[10px] text-gray-400 mb-0.5">Date</p>
-                  <p className="font-bold text-gray-900 text-sm">15 Sep 2024</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-gray-400 mb-0.5">Quantity</p>
-                  <p className="font-bold text-gray-900 text-sm">3 people</p>
-                </div>
-              </div>
+  <div>
+    <p className="text-sm text-neutral-500">
+      Route
+    </p>
 
-              {/* Airline card */}
-              <div className="border border-gray-100 rounded-xl p-3">
-                <div className="flex justify-between items-center mb-3">
-                  <div className="flex items-center gap-1">
-                    <span className="font-extrabold text-blue-600 text-xl tracking-tight">ANA</span>
-                    <div className="w-5 h-5 bg-blue-700 transform rotate-12 rounded-sm ml-1" />
-                  </div>
-                  <button className="bg-gray-900 text-white text-xs font-semibold px-4 py-1.5 rounded-lg hover:bg-gray-700 transition-colors">
-                    Details
-                  </button>
-                </div>
-                <div className="flex justify-between items-end text-xs">
-                  <div>
-                    <p className="font-semibold text-gray-900">Angga Air</p>
-                    <p className="text-gray-400">08:30 – 12:00</p>
-                  </div>
-                  <div className="text-center text-gray-400 leading-tight">
-                    <p>12 hours</p>
-                    <p className="text-[10px]">CGK ••→ HND</p>
-                    <p>Transit 1x</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-green-500 font-bold">Rp 4.560.341</p>
-                  </div>
-                </div>
-              </div>
+    <p className="font-medium">
+      {selectedFlight?.origin} →
+      {" "}
+      {selectedFlight?.destination}
+    </p>
+  </div>
 
-              {/* Class */}
-              <div className="flex items-center gap-3 mt-3">
-                <img
-                  src="https://images.pexels.com/photos/1309644/pexels-photo-1309644.jpeg?auto=compress&cs=tinysrgb&w=96&h=72&fit=crop"
-                  alt="Economy Class cabin"
-                  className="w-14 h-11 rounded-lg object-cover shrink-0"
-                />
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">Economy Class</p>
-                  <p className="text-gray-400 text-xs">Rp 1.560.490</p>
-                </div>
-              </div>
-            </div>
+  <div>
+    <p className="text-sm text-neutral-500">
+      Departure
+    </p>
+
+    <p className="font-medium">
+      {formatDate(
+        selectedFlight?.departs_at || ""
+      )}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-neutral-500">
+      Arrival
+    </p>
+
+    <p className="font-medium">
+      {formatDate(
+        selectedFlight?.arrives_at || ""
+      )}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-neutral-500">
+      Aircraft
+    </p>
+
+    <p className="font-medium">
+      {selectedFlight?.aircraft_type}
+    </p>
+  </div>
+</div>
+             <div className="bg-white rounded-3xl shadow-xl p-5">
+  {/* Airline card */}
+  <div className="border border-gray-100 rounded-xl p-3">
+    <div className="flex justify-between items-center mb-3">
+      <div className="flex items-center gap-1">
+        <span className="font-extrabold text-blue-600 text-xl tracking-tight">
+          ANA
+        </span>
+
+        <div className="w-5 h-5 bg-blue-700 transform rotate-12 rounded-sm ml-1" />
+      </div>
+
+      <button className="bg-gray-900 text-white text-xs font-semibold px-4 py-1.5 rounded-lg hover:bg-gray-700 transition-colors">
+        Details
+      </button>
+    </div>
+
+    <div className="flex justify-between items-end text-xs">
+      <div>
+        <p className="font-semibold text-gray-900">
+          {selectedFlight?.airline || "AeroFlow Airways"}
+        </p>
+
+        <p className="text-gray-400">
+          {formatDate(
+            selectedFlight?.departs_at || ""
+          )}
+        </p>
+      </div>
+
+      <div className="text-center text-gray-400 leading-tight">
+        <p>
+          {selectedFlight?.origin} →
+          {" "}
+          {selectedFlight?.destination}
+        </p>
+
+        <p>
+          Direct Flight
+        </p>
+      </div>
+
+      <div className="text-right">
+        <p className="text-green-500 font-bold">
+          ₹{selectedFlight?.base_price}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {/* Economy Class */}
+  <div className="flex items-center gap-3 mt-5">
+    <img
+      src="https://images.pexels.com/photos/1309644/pexels-photo-1309644.jpeg?auto=compress&cs=tinysrgb&w=96&h=72&fit=crop"
+      alt="Economy Class"
+      className="w-14 h-11 rounded-lg object-cover shrink-0"
+    />
+
+    <div>
+      <p className="font-bold text-gray-900 text-sm">
+        Economy Class
+      </p>
+
+      <p className="text-gray-400 text-xs">
+        Comfortable seating experience
+      </p>
+    </div>
+  </div>
+</div>
 
             {/* Transaction Details */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold text-gray-900 text-base">Transaction Details</h2>
-                <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50">
-                  <ArrowUp size={14} />
-                </button>
-              </div>
+           <div className="bg-white rounded-3xl shadow-xl p-5">
+  <div className="flex items-center justify-between">
+    <span className="text-neutral-500">
+      Seat
+    </span>
 
-              <div className="grid grid-cols-3 mb-3">
-                <div>
-                  <p className="text-[10px] text-gray-400 mb-0.5">Quantity</p>
-                  <p className="font-bold text-gray-900 text-sm">3 People</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-[10px] text-gray-400 mb-0.5">Tiers</p>
-                  <p className="font-bold text-gray-900 text-sm">Economy</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-gray-400 mb-0.5">Seats</p>
-                  <p className="font-bold text-gray-900 text-sm">
-                    {selected ? selected.id : "—"}
-                  </p>
-                </div>
-              </div>
+    <span className="font-semibold">
+      {selectedSeat || "Not selected"}
+    </span>
+  </div>
 
-              <div className="border-t border-gray-100 pt-3">
-                <div className="grid grid-cols-3 mb-3">
-                  <div>
-                    <p className="text-[10px] text-gray-400 mb-0.5">Price</p>
-                    <p className="font-medium text-gray-900 text-xs">Rp 1.560.490</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[10px] text-gray-400 mb-0.5">Govt. Tax</p>
-                    <p className="font-medium text-gray-900 text-xs">11%</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] text-gray-400 mb-0.5">Sub Total</p>
-                    <p className="font-medium text-gray-900 text-xs">Rp 4.849.392</p>
-                  </div>
-                </div>
+  <div className="flex items-center justify-between">
+    <span className="text-neutral-500">
+      Passengers
+    </span>
 
-                <div className="grid grid-cols-2 mt-2">
-                  <div>
-                    <p className="text-[10px] text-gray-400 mb-0.5">Total Tax</p>
-                    <p className="font-medium text-gray-900 text-sm">Rp 3.560.490</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] text-gray-400 mb-0.5">Grand Total</p>
-                    <p className="font-extrabold text-blue-500 text-base">Rp 844.849.392</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <span className="font-semibold">
+      {searchQuery?.passengers || 1}
+    </span>
+  </div>
 
+  <div className="flex items-center justify-between">
+    <span className="text-neutral-500">
+      Ticket Price
+    </span>
+
+    <span className="font-semibold">
+      ₹{selectedFlight?.base_price}
+    </span>
+  </div>
+
+  <div className="border-t pt-4">
+    <div className="flex items-center justify-between">
+      <span className="text-lg font-semibold">
+        Total
+      </span>
+
+      <span className="text-2xl font-bold">
+        ₹{selectedFlight?.base_price}
+      </span>
+    </div>
+  </div>
+</div>
+</div>
           {/* Right panel – Seat map */}
           <div className="flex-1 bg-linear-to-b from-gray-50 to-white rounded-3xl shadow-lg flex flex-col overflow-hidden">
             {/* Airplane nose */}

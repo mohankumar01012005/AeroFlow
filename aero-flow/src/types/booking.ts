@@ -27,8 +27,18 @@ export type FlightSearchQuery = {
   passengers: number;
 };
 
+export type RecentSearch = {
+  origin: string;
+
+  destination: string;
+
+  date: string;
+};
+
 export type FlightStore = {
-  searchQuery: FlightSearchQuery | null;
+  searchQuery:
+    | FlightSearchQuery
+    | null;
 
   selectedFlight: Flight | null;
 
@@ -37,6 +47,8 @@ export type FlightStore = {
   bookingStep: BookingStep;
 
   passengerForm: PassengerForm;
+
+  recentSearches: RecentSearch[];
 
   setSearchQuery: (
     query: FlightSearchQuery
@@ -56,6 +68,10 @@ export type FlightStore = {
 
   setPassengerForm: (
     form: PassengerForm
+  ) => void;
+
+  addRecentSearch: (
+    search: RecentSearch
   ) => void;
 
   clearBooking: () => void;

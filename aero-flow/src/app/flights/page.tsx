@@ -1,9 +1,8 @@
 import { createClient } from "@/src/lib/supabase/server";
 
 import { Flight } from "@/src/types/flight";
-
 import FlightCard from "@/src/components/flight/FlightCard";
-
+import FlightsList from "../../components/flight/FlightsList";
 type FlightsPageProps = {
   searchParams: Promise<{
     origin?: string;
@@ -14,10 +13,13 @@ type FlightsPageProps = {
 };
 
 export default async function FlightsPage({
+  
   searchParams,
 }: FlightsPageProps) {
-  const params = await searchParams;
 
+
+  const params = await searchParams;
+ 
   const origin = params.origin ?? "";
 
   const destination = params.destination ?? "";
@@ -31,7 +33,7 @@ export default async function FlightsPage({
     .select("*")
     .ilike("origin", origin)
     .ilike("destination", destination)
-    .eq("status", "scheduled");
+    .not("status", "eq", "cancelled");
 
   if (date) {
     query = query.gte(
@@ -62,6 +64,10 @@ export default async function FlightsPage({
     );
   }
 
+
+
+
+  
   return (
     <main className="min-h-screen bg-neutral-50 px-4 py-10">
       <div className="mx-auto max-w-6xl">
@@ -74,24 +80,23 @@ export default async function FlightsPage({
             {origin} → {destination}
           </p>
         </div>
+        <div className="mb-6 flex items-center justify-between">
+  
 
-        <div className="space-y-4">
-          {flights?.length === 0 ? (
-            <div className="rounded-2xl border bg-white p-6 text-center">
-              <p className="text-neutral-500">
-                No flights found.
-              </p>
-            </div>
-          ) : (
-            flights?.map((flight: Flight) => (
-              <FlightCard
-                key={flight.id}
-                flight={flight}
-              />
-            ))
-          )}
+ 
+</div>
+        
+         {flights?.length === 0 ? (
+  <div className="rounded-2xl border bg-white p-6 text-center">
+    <p className="text-neutral-500">
+      No flights found.
+    </p>
+  </div>
+) : (
+  <FlightsList flights={flights} />
+)}
         </div>
-      </div>
+      
     </main>
   );
 }

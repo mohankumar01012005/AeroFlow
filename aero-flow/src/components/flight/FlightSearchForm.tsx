@@ -1,31 +1,68 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
+
+import { useFlightStore } from "@/src/stores/useFlightStore";
 
 export default function FlightSearchForm() {
   const router = useRouter();
 
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [date, setDate] = useState("");
-  const [passengers, setPassengers] = useState(1);
+  const {
+    addRecentSearch,
 
-  function handleSearch(e: React.FormEvent) {
+    recentSearches,
+  } = useFlightStore();
+
+  const [origin, setOrigin] =
+    useState("");
+
+  const [
+    destination,
+    setDestination,
+  ] = useState("");
+
+  const [date, setDate] =
+    useState("");
+
+  const [
+    passengers,
+    setPassengers,
+  ] = useState(1);
+
+  function handleSearch(
+    e: React.FormEvent
+  ) {
     e.preventDefault();
 
-    const query = new URLSearchParams({
+    addRecentSearch({
       origin,
+
       destination,
+
       date,
-      passengers: passengers.toString(),
     });
 
-    router.push(`/flights?${query.toString()}`);
+    const query =
+      new URLSearchParams({
+        origin,
+
+        destination,
+
+        date,
+
+        passengers:
+          passengers.toString(),
+      });
+
+    router.push(
+      `/flights?${query.toString()}`
+    );
   }
 
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 py-10">
+    <section className="mx-auto w-full max-w-6xl px-4 py-10">
       <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
           <h1 className="text-3xl font-bold tracking-tight">
@@ -33,7 +70,9 @@ export default function FlightSearchForm() {
           </h1>
 
           <p className="mt-2 text-sm text-neutral-500">
-            Find and book flights across multiple destinations
+            Find and book flights
+            across multiple
+            destinations
           </p>
         </div>
 
@@ -50,7 +89,11 @@ export default function FlightSearchForm() {
               type="text"
               placeholder="Delhi"
               value={origin}
-              onChange={(e) => setOrigin(e.target.value)}
+              onChange={(e) =>
+                setOrigin(
+                  e.target.value
+                )
+              }
               required
               className="w-full rounded-xl border border-neutral-300 px-4 py-3 outline-none transition focus:border-black"
             />
@@ -65,7 +108,11 @@ export default function FlightSearchForm() {
               type="text"
               placeholder="Mumbai"
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={(e) =>
+                setDestination(
+                  e.target.value
+                )
+              }
               required
               className="w-full rounded-xl border border-neutral-300 px-4 py-3 outline-none transition focus:border-black"
             />
@@ -79,7 +126,11 @@ export default function FlightSearchForm() {
             <input
               type="date"
               value={date}
-              onChange={(e) => setDate(e.target.value)}
+              onChange={(e) =>
+                setDate(
+                  e.target.value
+                )
+              }
               required
               className="w-full rounded-xl border border-neutral-300 px-4 py-3 outline-none transition focus:border-black"
             />
@@ -96,7 +147,11 @@ export default function FlightSearchForm() {
               max={5}
               value={passengers}
               onChange={(e) =>
-                setPassengers(Number(e.target.value))
+                setPassengers(
+                  Number(
+                    e.target.value
+                  )
+                )
               }
               required
               className="w-full rounded-xl border border-neutral-300 px-4 py-3 outline-none transition focus:border-black"
@@ -112,6 +167,42 @@ export default function FlightSearchForm() {
             </button>
           </div>
         </form>
+
+        {recentSearches.length >
+          0 && (
+          <div className="mt-8">
+            <h2 className="mb-3 text-lg font-semibold">
+              Recent Searches
+            </h2>
+
+            <div className="flex flex-wrap gap-3">
+              {recentSearches.map(
+                (
+                  search,
+                  index
+                ) => (
+                  <button
+                    key={index}
+                    onClick={() =>
+                      router.push(
+                        `/flights?origin=${search.origin}&destination=${search.destination}&date=${search.date}`
+                      )
+                    }
+                    className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    {
+                      search.origin
+                    }{" "}
+                    →{" "}
+                    {
+                      search.destination
+                    }
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
