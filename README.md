@@ -2,9 +2,6 @@
 
 AeroFlow is a full-stack flight booking application built with Next.js and Supabase. It provides a complete customer booking journey including authentication, flight discovery, seat selection, passenger details capture, booking confirmation, ticket viewing, PDF ticket download, and booking cancellation.
 
-## Walkthrough : https://drive.google.com/file/d/1d7SKoOVm6eDMl926bhMFo-OKzkA4w0pZ/view?usp=sharing
-
-
 ## Overview
 
 This project is structured as a repository root with the application source located in `aero-flow/`. The app uses the Next.js App Router for the frontend experience and Supabase for authentication, database access, and backend RPC workflows.
@@ -237,6 +234,4 @@ This README is based on the code currently in the repository. A few areas are im
 4. Run linting and verify the booking flow manually.
 5. Open a pull request with a clear summary of functional changes.
 
-## License
 
-No license file is currently present in this repository. If this project is intended for public distribution, add an explicit license before release.
